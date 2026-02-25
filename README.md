@@ -1,44 +1,58 @@
-🚀 BiteSpeed Backend – Identity Reconciliation API
-📌 Overview
+# 🚀 BiteSpeed Backend – Identity Reconciliation API
 
-This project implements an Identity Reconciliation API that links multiple contact records based on shared:
+## 📌 Problem Statement
 
-Email
+Build an Identity Reconciliation API that links multiple contact records based on shared **email** or **phone number**.
 
-Phone Number
+If different requests contain overlapping contact information, the system should:
 
-The system maintains a primary contact and associates secondary contacts when duplicate or related information is detected.
+- Maintain one **primary contact**
+- Link other related contacts as **secondary**
+- Return a consolidated response with all linked information
 
-🛠 Tech Stack
+---
 
-Node.js
+## 🛠 Tech Stack
 
-TypeScript
+- Node.js
+- TypeScript
+- Express
+- Prisma ORM
+- PostgreSQL (Render)
+- Deployed on Render
 
-Express
+---
 
-Prisma ORM
-
-PostgreSQL (Render)
-
-Deployed on Render
-
-🌐 Live API
+## 🌐 Live Deployment
 
 Base URL:
 
 https://bitespeed-backend-lrzf.onrender.com
-📮 API Endpoint
-POST /identify
+
+---
+
+## 📮 API Endpoint
+
+### POST `/identify`
 
 Reconciles identity based on email or phone number.
 
-Request Body (JSON)
+### Request Body (JSON)
+
+```json
 {
   "email": "a@test.com",
   "phoneNumber": "222"
 }
-Response Example
+```
+
+Both fields are optional, but at least one must be provided.
+
+---
+
+### Response Example
+
+```json
 {
   "contact": {
     "primaryContactId": 1,
@@ -47,58 +61,88 @@ Response Example
     "secondaryContactIds": []
   }
 }
-🧠 How It Works
+```
 
-If no contact exists → Creates a new primary contact
+---
 
-If matching email/phone exists → Links as secondary contact
+## 🧠 Logic Overview
 
-If multiple contacts are connected → Merges under the oldest primary contact
+1. If no matching contact exists → Create a new primary contact.
+2. If matching contact exists → Link as secondary contact.
+3. If multiple primary contacts are found → Merge under the oldest primary contact.
+4. Return consolidated contact information.
 
-🗄 Database Schema (Prisma)
+---
 
-The system maintains:
+## 🗄 Database Schema (Prisma)
 
-id
+Each contact contains:
 
-email
+- id
+- email
+- phoneNumber
+- linkedId
+- linkPrecedence (primary / secondary)
+- createdAt
+- updatedAt
+- deletedAt
 
-phoneNumber
+---
 
-linkedId
+## ⚙️ Local Setup
 
-linkPrecedence (primary / secondary)
+### 1️⃣ Clone the repository
 
-createdAt
-
-updatedAt
-
-deletedAt
-
-⚙️ Local Setup
-1️⃣ Clone the repo
-git clone https://github.com/your-username/bitespeed-backend.git
+```bash
+git clone https://github.com/kirti125/bitespeed-backend.git
 cd bitespeed-backend
-2️⃣ Install dependencies
+```
+
+### 2️⃣ Install dependencies
+
+```bash
 npm install
-3️⃣ Create .env
-DATABASE_URL=your_postgres_connection_string
-4️⃣ Run migrations
+```
+
+### 3️⃣ Create `.env` file
+
+```
+DATABASE_URL=your_postgresql_connection_string
+```
+
+### 4️⃣ Run migrations
+
+```bash
 npx prisma migrate dev
-5️⃣ Start server
+```
+
+### 5️⃣ Start development server
+
+```bash
 npm run dev
-🚀 Production Build
+```
+
+---
+
+## 🚀 Production Build
+
+```bash
 npm run build
 npm start
-📂 Project Structure
+```
+
+---
+
+## 📂 Project Structure
+
+```
 src/        → Application logic
 prisma/     → Prisma schema & migrations
-dist/       → Compiled output (ignored in git)
-📈 Deployment
+dist/       → Compiled output
+```
 
-Deployed using Render Web Service
-Database hosted on Render PostgreSQL
+---
 
-✨ Author
+## ✨ Author
 
 Kirti Yadav
